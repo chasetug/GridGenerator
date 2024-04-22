@@ -1,35 +1,55 @@
 let size = null;
-while (isNaN(size) || size > 10 || size < 1) {
-    size = +prompt(`Enter grid size:`);
-}
-let center = Math.ceil(size / 2);
+let bombs = 0;
 
-for (let i = 0; i < size; i++) {
-    let buttonDiv = document.getElementById("buttons");
-    let row = document.createElement("div");
+function generateButtons() {
+    size = +document.querySelector('input[name="size"]:checked').value;
 
-    row.setAttribute("id", `row-${i}`);
-    buttonDiv.appendChild(row);
+    let sizeInput = document.getElementById("size-input");
+    sizeInput.style.display = 'none';
 
-    for (let j = 0; j < size; j++) {
-        let button = document.createElement(`button`);
+    let center = Math.ceil(size / 2);
 
-        button.innerText = '⬜'
-        button.setAttribute("id", `button-${i}-${j}`);
+    for (let i = 0; i < size; i++) {
+        let buttonDiv = document.getElementById("buttons");
+        let row = document.createElement("div");
+        let bombCount = document.getElementById("bomb-count");
 
-        if (i+1 === center && j+1 === center) {
-            button.innerText = "⬛";
-        } else {
-            button.addEventListener('click', () => {
-                button.innerText === "⬜" ? button.innerText = "💣" : button.innerText = "⬜";
-            })
+        row.setAttribute("id", `row-${i}`);
+        buttonDiv.appendChild(row);
+
+        for (let j = 0; j < size; j++) {
+            let button = document.createElement(`button`);
+
+            button.innerText = '⬜'
+            button.setAttribute("id", `button-${i}-${j}`);
+
+            if (i+1 === center && j+1 === center) {
+                button.innerText = "🟦";
+            } else {
+                button.addEventListener('click', () => {
+                    if (button.innerText === "⬜") {
+                        button.innerText = "💣"
+                        bombs++;
+                        bombCount.innerText = `Bomb Count: ${bombs}`
+                    } else {
+                        button.innerText = "⬜";
+                        bombs--;
+                        bombCount.innerText = `Bomb Count: ${bombs}`
+                    }
+                })
+            }
+
+            row.appendChild(button)
         }
-
-        row.appendChild(button)
     }
+
+    let gridButtons = document.getElementById("grid-buttons");
+    gridButtons.style.display = 'inline';
 }
 
-function generate() {
+
+
+function generateJson() {
     let grid = [];
     for (let i = 0; i < size; i++) {
         let row = [];
@@ -40,6 +60,20 @@ function generate() {
         }
         grid.push(row);
     }
+
+    let resultsDiv = document.getElementById(`results-div`);
+    resultsDiv.style.display = 'inline';
+
     let results = document.getElementById(`results`);
     results.innerText = JSON.stringify(grid);
+}
+
+function reloadPage() {
+    location.reload();
+}
+
+function copyResults() {
+    let copyText = document.getElementById("results");
+    navigator.clipboard.writeText(copyText.innerText)
+        .then();
 }
