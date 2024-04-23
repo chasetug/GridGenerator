@@ -65,7 +65,7 @@ function generateJson() {
     resultsDiv.style.display = 'inline';
 
     let results = document.getElementById(`results`);
-    results.innerText = JSON.stringify(grid);
+    results.innerText = "map_instance = " + JSON.stringify(grid);
 }
 
 function reloadPage() {
